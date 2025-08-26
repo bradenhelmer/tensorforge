@@ -21,6 +21,21 @@ include(TableGen)
 include(AddLLVM)
 include(AddMLIR)
 
+# Match LLVM's build configuration
+separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
+add_definitions(${LLVM_DEFINITIONS_LIST})
+message(STATUS "Adding LLVM definitions: ${LLVM_DEFINITIONS_LIST}")
+
+# Use LLVM's CXX flags to match their build configuration
+if(NOT LLVM_ENABLE_RTTI)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
+endif()
+
+if(NOT LLVM_ENABLE_EH)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
+endif()
+
+# Add LLVM and MLIR include directories
 include_directories(${LLVM_INCLUDE_DIRS})
 include_directories(${MLIR_INCLUDE_DIRS})
 include_directories(${PROJECT_SOURCE_DIR}/include)
@@ -61,3 +76,4 @@ if(CLANG_FORMAT_EXECUTABLE)
 else()
     message(WARNING "clang-format not found. Format targets will not be available.")
 endif()
+
