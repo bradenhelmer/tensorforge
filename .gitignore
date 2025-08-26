@@ -43,3 +43,6 @@
 # Build files
 build
 compile_commands.json
+
+# clangd cache
+.cache
