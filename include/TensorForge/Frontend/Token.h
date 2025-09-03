@@ -18,7 +18,7 @@ static TFTokenKind getKeywordKind(llvm::StringRef keyword) {
   return llvm::StringSwitch<TFTokenKind>(keyword)
 #define TF_KEYWORD(X) .Case(#X, kw_##X)
 #include "TokenMacros.h"
-      .Default(invalid);
+      .Default(id);
 }
 
 static const char *TokenNames[NUM_TOKENS] = {

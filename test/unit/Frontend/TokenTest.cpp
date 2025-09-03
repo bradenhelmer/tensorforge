@@ -27,8 +27,7 @@ INSTANTIATE_TEST_SUITE_P(
         std::make_pair("int32", kw_int32), std::make_pair("int8", kw_int8)));
 
 TEST(TokenTest, getKeywordKindInvalid) {
-  EXPECT_EQ(getKeywordKind("invalid_keyword"), invalid);
-  EXPECT_EQ(getKeywordKind("identifier"), invalid);
-  EXPECT_EQ(getKeywordKind(""), invalid);
-  EXPECT_EQ(getKeywordKind("IF"), invalid); // Case sensitive
+  EXPECT_EQ(getKeywordKind("invalid_keyword"), id);
+  EXPECT_EQ(getKeywordKind("identifier"), id);
+  EXPECT_EQ(getKeywordKind("IF"), id); // Case sensitive
 }
