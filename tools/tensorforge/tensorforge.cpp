@@ -1,4 +1,5 @@
 // tensorforge.cpp
+#include "TensorForge/Frontend/Parser.h"
 #include <llvm/Support/CommandLine.h>
 #include <llvm/Support/ErrorOr.h>
 #include <llvm/Support/InitLLVM.h>
@@ -6,6 +7,7 @@
 #include <llvm/Support/raw_ostream.h>
 
 using namespace llvm;
+using namespace tensorforge;
 
 // Command Line Options
 
@@ -16,6 +18,10 @@ static cl::opt<std::string> inputFilename(cl::Positional,
 static cl::opt<std::string> outputFilename("o", cl::desc("Output filename"),
                                            cl::value_desc("filename"),
                                            cl::init("-"));
+
+static cl::opt<bool> dumpTokens("dump-tokens",
+                                cl::desc("Dump tokens for source file."),
+                                cl::init(false));
 
 int main(int argc, char *argv[]) {
   InitLLVM X(argc, argv);
@@ -28,5 +34,14 @@ int main(int argc, char *argv[]) {
   }
 
   std::unique_ptr<MemoryBuffer> InputFile = std::move(*FileOrError);
+
+  TFParser Parser(InputFile->getBuffer());
+
+  if (dumpTokens) {
+    Parser.dumpTokens();
+  }
+
+  auto program = Parser.parseTFProgram();
+
   return 0;
 }

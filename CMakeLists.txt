@@ -44,12 +44,17 @@ include_directories(${PROJECT_BINARY_DIR}/include)
 add_subdirectory(lib)
 add_subdirectory(tools)
 
+# Testing
+enable_testing()
+add_subdirectory(test)
+
 # Find all C++ source and header files
 file(GLOB_RECURSE ALL_CXX_SOURCE_FILES
-    ${PROJECT_SOURCE_DIR}/lib/*.cpp
-    ${PROJECT_SOURCE_DIR}/lib/*.h
     ${PROJECT_SOURCE_DIR}/include/*.cpp
     ${PROJECT_SOURCE_DIR}/include/*.h
+    ${PROJECT_SOURCE_DIR}/lib/*.cpp
+    ${PROJECT_SOURCE_DIR}/lib/*.h
+    ${PROJECT_SOURCE_DIR}/test/*.cpp
     ${PROJECT_SOURCE_DIR}/tools/*.cpp
     ${PROJECT_SOURCE_DIR}/tools/*.h
 )

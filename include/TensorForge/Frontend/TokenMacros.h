@@ -12,10 +12,17 @@
 #define TF_KEYWORD(KEYWORD) TF_TOKEN(kw_##KEYWORD)
 #endif /* ifndef TF_KEYWORD(KEYWORD) */
 
+// Misc
+TF_TOKEN(eof)
+TF_TOKEN(invalid)
+
 // Literals
-TF_TOKEN(ID)
-TF_TOKEN(INT)
-TF_TOKEN(FLOAT)
+TF_TOKEN(id)
+TF_TOKEN(newline)
+TF_TOKEN(indent)
+TF_TOKEN(dedent)
+TF_TOKEN(int_lit)
+TF_TOKEN(float_lit)
 
 // Keywords
 TF_KEYWORD(def)

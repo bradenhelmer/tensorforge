@@ -18,7 +18,7 @@ static TFTokenKind getKeywordKind(llvm::StringRef keyword) {
   return llvm::StringSwitch<TFTokenKind>(keyword)
 #define TF_KEYWORD(X) .Case(#X, kw_##X)
 #include "TokenMacros.h"
-      ;
+      .Default(invalid);
 }
 
 static const char *TokenNames[NUM_TOKENS] = {
@@ -34,6 +34,10 @@ struct TFToken {
   const char *Start;
   const char *End;
   TFTokenKind Kind;
+
+  llvm::StringRef getTokenString() const {
+    return llvm::StringRef(Start, Start - End);
+  }
 };
 
 } // namespace tensorforge
