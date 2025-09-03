@@ -9,7 +9,7 @@
 #endif /* ifndef TF_OPERATOR(OPERATOR, SYMBOL) */
 
 #ifndef TF_KEYWORD
-#define TF_KEYWORD(KEYWORD) TF_TOKEN(kw_##KEYWORD)
+#define TF_KEYWORD(KEYWORD) TF_TOKEN(KEYWORD)
 #endif /* ifndef TF_KEYWORD(KEYWORD) */
 
 // Misc

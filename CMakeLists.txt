@@ -45,8 +45,15 @@ add_subdirectory(lib)
 add_subdirectory(tools)
 
 # Testing
-enable_testing()
 add_subdirectory(test)
+
+# Override the default test target to run our executable directly
+add_custom_target(test
+    COMMAND $<TARGET_FILE:TensorForgeUnitTests>
+    DEPENDS TensorForgeUnitTests
+    COMMENT "Running TensorForge unit tests"
+    VERBATIM
+)
 
 # Find all C++ source and header files
 file(GLOB_RECURSE ALL_CXX_SOURCE_FILES

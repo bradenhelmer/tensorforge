@@ -10,23 +10,25 @@ namespace tensorforge {
 
 enum TFTokenKind : uint8_t {
 #define TF_TOKEN(X) X,
+#define TF_KEYWORD(KEYWORD) TF_TOKEN(kw_##KEYWORD)
 #include "TokenMacros.h"
   NUM_TOKENS
 };
 
-static TFTokenKind getKeywordKind(llvm::StringRef keyword) {
+// Gets a possible keyword from an already valid identifier.
+static TFTokenKind getPossibleKWFromID(llvm::StringRef keyword) {
   return llvm::StringSwitch<TFTokenKind>(keyword)
 #define TF_KEYWORD(X) .Case(#X, kw_##X)
-#include "TokenMacros.h"
+#include "TensorForge/Frontend/TokenMacros.h"
       .Default(id);
 }
 
 static const char *TokenNames[NUM_TOKENS] = {
 #define TF_TOKEN(X) #X,
-#include "TokenMacros.h"
+#include "TensorForge/Frontend/TokenMacros.h"
 };
 
-static inline const char *getTokenName(TFTokenKind kind) {
+inline static const char *getTokenName(TFTokenKind kind) {
   return TokenNames[kind];
 }
 

@@ -1,5 +1,6 @@
 // Lexer.cpp
 #include "TensorForge/Frontend/Lexer.h"
+#include "TensorForge/Frontend/Token.h"
 
 using namespace tensorforge;
 
@@ -10,6 +11,8 @@ bool TFLexer::lexId(TFToken *Out) {
     BufferPtr++;
   } while (isIdentifierChar(*BufferPtr));
   Out->End = BufferPtr - 1;
+  Out->Kind = getPossibleKWFromID(Out->getTokenString());
+  return true;
 }
 
 bool TFLexer::lexIndent(TFToken *Out) {
