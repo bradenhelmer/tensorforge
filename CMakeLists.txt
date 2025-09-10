@@ -10,6 +10,7 @@ set(CMAKE_BUILD_TYPE "Debug")
 
 find_package(MLIR REQUIRED CONFIG)
 find_package(LLVM REQUIRED CONFIG)
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
 
 message(STATUS "Using MLIRConfig.cmake in: ${MLIR_DIR}")
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
@@ -44,16 +45,15 @@ include_directories(${PROJECT_BINARY_DIR}/include)
 add_subdirectory(lib)
 add_subdirectory(tools)
 
-# Testing
-add_subdirectory(test)
+# Unit Tests
+add_subdirectory(unittests)
 
-# Override the default test target to run our executable directly
-add_custom_target(test
-    COMMAND $<TARGET_FILE:TensorForgeUnitTests>
-    DEPENDS TensorForgeUnitTests
-    COMMENT "Running TensorForge unit tests"
-    VERBATIM
-)
+# Lit Tests
+set(TENSORFORGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(TENSORFORGE_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
+message(STATUS "TF Src DIR: ${TENSORFORGE_SOURCE_DIR}")
+message(STATUS "TF Bin DIR: ${TENSORFORGE_BINARY_DIR}")
+add_subdirectory(test)
 
 # Find all C++ source and header files
 file(GLOB_RECURSE ALL_CXX_SOURCE_FILES
