@@ -9,9 +9,9 @@ using namespace tensorforge;
 
 void TFLexer::lexComment() {
   do {
-    BufferPtr++;
+    traverseForward();
   } while (*BufferPtr != '\n');
-  BufferPtr++;
+  traverseForward();
   if (*BufferPtr == '#') {
     lexComment();
   }
@@ -19,17 +19,17 @@ void TFLexer::lexComment() {
 
 void TFLexer::lexWhitespace() {
   do {
-    BufferPtr++;
+    traverseForward();
   } while (*BufferPtr == ' ');
 }
 
 bool TFLexer::lexFloatOrIntLiteral(TFToken *Out) {
   bool DotFound = false;
   do {
-    BufferPtr++;
+    traverseForward();
     if (*BufferPtr == '.' && !DotFound) {
       Out->Kind = float_lit;
-      BufferPtr++;
+      traverseForward();
       DotFound = true;
     }
   } while (std::isdigit(*BufferPtr));
@@ -39,7 +39,7 @@ bool TFLexer::lexFloatOrIntLiteral(TFToken *Out) {
 
 bool TFLexer::lexIdOrKeyword(TFToken *Out) {
   do {
-    BufferPtr++;
+    traverseForward();
   } while (isIdentifierChar(*BufferPtr));
   Out->End = BufferPtr - 1;
   Out->Kind = getPossibleKWFromID(Out->getTokenString());
@@ -47,19 +47,20 @@ bool TFLexer::lexIdOrKeyword(TFToken *Out) {
 }
 
 bool TFLexer::lexIndent(TFToken *Out) {
-  while (*(++BufferPtr) == '\n') {
+  while (*(BufferPtr + 1) == '\n') {
+    traverseForward();
     CurrLoc.Line++;
     CurrLoc.Col = 1;
   }
+  traverseForward();
 
   uint8_t NewLevel;
   uint8_t Spaces = 0;
 
   if (*BufferPtr == ' ') {
     do {
-      BufferPtr++;
+      traverseForward();
       Spaces++;
-      CurrLoc.Col++;
     } while (*BufferPtr == ' ');
   }
 
@@ -218,6 +219,6 @@ bool TFLexer::lexToken(TFToken *Out) {
     Out->Kind = newline;
     return lexIndent(Out);
   }
-  BufferPtr++;
+  traverseForward();
   return true;
 }

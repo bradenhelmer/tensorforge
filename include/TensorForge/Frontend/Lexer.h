@@ -38,6 +38,11 @@ public:
     return std::isalpha(c) || std::isdigit(c) || c == '_';
   }
 
+  inline void traverseForward() {
+    BufferPtr++;
+    CurrLoc.Col++;
+  }
+
   /* Core lexical functions */
   void lexComment();
   bool lexFloatOrIntLiteral(TFToken *Out);
