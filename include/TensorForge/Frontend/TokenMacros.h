@@ -39,6 +39,8 @@ TF_KEYWORD(float32)
 TF_KEYWORD(float16)
 TF_KEYWORD(int32)
 TF_KEYWORD(int8)
+TF_KEYWORD(True)
+TF_KEYWORD(False)
 
 // Arithmetic Operators
 TF_OPERATOR(plus, "+")

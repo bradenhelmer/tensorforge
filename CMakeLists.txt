@@ -8,6 +8,9 @@ set(CMAKE_INCLUDE_CURRENT_DIR)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_BUILD_TYPE "Debug")
 
+# Set output directories for binaries
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
 find_package(MLIR REQUIRED CONFIG)
 find_package(LLVM REQUIRED CONFIG)
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
@@ -51,8 +54,7 @@ add_subdirectory(unittests)
 # Lit Tests
 set(TENSORFORGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(TENSORFORGE_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
-message(STATUS "TF Src DIR: ${TENSORFORGE_SOURCE_DIR}")
-message(STATUS "TF Bin DIR: ${TENSORFORGE_BINARY_DIR}")
+set(TENSORFORGE_TOOLS_DIR ${TENSORFORGE_BINARY_DIR}/bin)
 add_subdirectory(test)
 
 # Find all C++ source and header files
@@ -88,4 +90,3 @@ if(CLANG_FORMAT_EXECUTABLE)
 else()
     message(WARNING "clang-format not found. Format targets will not be available.")
 endif()
-

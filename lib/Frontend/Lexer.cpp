@@ -1,12 +1,43 @@
 // Lexer.cpp
 #include "TensorForge/Frontend/Lexer.h"
 #include "TensorForge/Frontend/Token.h"
+#include <cstdlib>
+#include <llvm/Support/raw_ostream.h>
 
+using namespace llvm;
 using namespace tensorforge;
 
-bool TFLexer::lexFloatOrIntLiteral(TFToken *Out) {}
+void TFLexer::lexComment() {
+  do {
+    BufferPtr++;
+  } while (*BufferPtr != '\n');
+  BufferPtr++;
+  if (*BufferPtr == '#') {
+    lexComment();
+  }
+}
 
-bool TFLexer::lexId(TFToken *Out) {
+void TFLexer::lexWhitespace() {
+  do {
+    BufferPtr++;
+  } while (*BufferPtr == ' ');
+}
+
+bool TFLexer::lexFloatOrIntLiteral(TFToken *Out) {
+  bool DotFound = false;
+  do {
+    BufferPtr++;
+    if (*BufferPtr == '.' && !DotFound) {
+      Out->Kind = float_lit;
+      BufferPtr++;
+      DotFound = true;
+    }
+  } while (std::isdigit(*BufferPtr));
+  Out->End = BufferPtr - 1;
+  return true;
+}
+
+bool TFLexer::lexIdOrKeyword(TFToken *Out) {
   do {
     BufferPtr++;
   } while (isIdentifierChar(*BufferPtr));
@@ -16,12 +47,20 @@ bool TFLexer::lexId(TFToken *Out) {
 }
 
 bool TFLexer::lexIndent(TFToken *Out) {
+  while (*(++BufferPtr) == '\n') {
+    CurrLoc.Line++;
+    CurrLoc.Col = 1;
+  }
+
   uint8_t NewLevel;
   uint8_t Spaces = 0;
 
-  while (*(++BufferPtr) == ' ') {
-    Spaces++;
-    CurrLoc.Col++;
+  if (*BufferPtr == ' ') {
+    do {
+      BufferPtr++;
+      Spaces++;
+      CurrLoc.Col++;
+    } while (*BufferPtr == ' ');
   }
 
   if (Spaces % 4 != 0) {
@@ -40,26 +79,18 @@ bool TFLexer::lexIndent(TFToken *Out) {
   return true;
 }
 
-bool TFLexer::lexNewline(TFToken *Out) {
-  while (*(++BufferPtr) == '\n') {
-    CurrLoc.Line++;
-    CurrLoc.Col = 1;
-  }
-  Out->Kind = newline;
-  return true;
-}
-
 bool TFLexer::lexToken(TFToken *Out) {
-  if (*BufferPtr == '\n') {
-    return lexNewline(Out);
+
+  if (*BufferPtr == '#') {
+    lexComment();
+  }
+
+  if (*BufferPtr == ' ') {
+    lexWhitespace();
   }
 
   Out->Start = BufferPtr;
   Out->End = BufferPtr;
-
-  if (Out->Kind == newline) {
-    return lexIndent(Out);
-  }
 
   const char Peek = *(BufferPtr + 1);
 
@@ -88,6 +119,8 @@ bool TFLexer::lexToken(TFToken *Out) {
   case ')':
     Out->Kind = rparen;
     break;
+  case ':':
+    Out->Kind = colon;
   case '+':
     if (Peek == '=') {
       Out->End = ++BufferPtr;
@@ -175,11 +208,15 @@ bool TFLexer::lexToken(TFToken *Out) {
   case 'v': case 'w': case 'x': case 'y': case 'z':
   case '_':
     Out->Kind = id;
-    return lexId(Out);
+    return lexIdOrKeyword(Out);
   case '0': case '1': case '2': case '3': case '4':
   case '5': case '6': case '7': case '8': case '9':
     // clang-format on
+    Out->Kind = int_lit;
     return lexFloatOrIntLiteral(Out);
+  case '\n':
+    Out->Kind = newline;
+    return lexIndent(Out);
   }
   BufferPtr++;
   return true;

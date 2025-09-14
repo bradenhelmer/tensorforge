@@ -1,6 +1,6 @@
 add_library(
     TFFrontend
-    SHARED
+    STATIC
     Lexer.cpp
     Parser.cpp
 )

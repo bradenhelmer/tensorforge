@@ -21,3 +21,11 @@ config.test_source_root = os.path.dirname(__file__)
 config.test_exec_root = os.path.join(config.tensorforge_obj_root, "test")
 
 llvm_config.use_default_substitutions()
+
+tool_dirs = [config.tensorforge_tools_dir]
+
+tools = [
+    "tensorforge"
+]
+
+llvm_config.add_tool_substitutions(tools, tool_dirs)

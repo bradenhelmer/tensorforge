@@ -6,6 +6,7 @@ configure_lit_site_cfg(
   PATHS
   "TENSORFORGE_SOURCE_DIR"
   "TENSORFORGE_BINARY_DIR"
+  "TENSORFORGE_TOOLS_DIR"
 )
 
 add_lit_testsuite(check-tensorforge "Running TensorForge regression tests"

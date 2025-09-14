@@ -9,10 +9,10 @@ using namespace tensorforge;
 void TFParser::dumpTokens() {
   advance();
   while (CurrToken.Kind != eof) {
-    outs() << CurrToken.getTokenString() << " -> "
-           << getTokenName(CurrToken.Kind) << "\n";
+    outs() << getTokenName(CurrToken.Kind) << "\n";
     advance();
   }
+  outs() << getTokenName(CurrToken.Kind) << "\n";
 }
 
 void TFParser::advance() { Lexer->lexToken(&CurrToken); }

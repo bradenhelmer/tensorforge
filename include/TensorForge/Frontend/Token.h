@@ -25,6 +25,7 @@ static TFTokenKind getPossibleKWFromID(llvm::StringRef keyword) {
 
 static const char *TokenNames[NUM_TOKENS] = {
 #define TF_TOKEN(X) #X,
+#define TF_KEYWORD(KEYWORD) TF_TOKEN(kw_##KEYWORD)
 #include "TensorForge/Frontend/TokenMacros.h"
 };
 
@@ -38,7 +39,7 @@ struct TFToken {
   TFTokenKind Kind;
 
   llvm::StringRef getTokenString() const {
-    return llvm::StringRef(Start, Start - End);
+    return llvm::StringRef(Start, (End - Start) + 1);
   }
 };
 

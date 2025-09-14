@@ -39,11 +39,12 @@ public:
   }
 
   /* Core lexical functions */
+  void lexComment();
   bool lexFloatOrIntLiteral(TFToken *Out);
-  bool lexId(TFToken *Out);
+  bool lexIdOrKeyword(TFToken *Out);
   bool lexIndent(TFToken *Out);
-  bool lexNewline(TFToken *Out);
   bool lexToken(TFToken *Out);
+  void lexWhitespace();
 };
 
 } // namespace tensorforge
