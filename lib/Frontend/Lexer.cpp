@@ -82,6 +82,8 @@ bool TFLexer::lexIndent(TFToken *Out) {
 
 bool TFLexer::lexToken(TFToken *Out) {
 
+  Out->Kind = invalid;
+
   if (*BufferPtr == '#') {
     lexComment();
   }
@@ -197,7 +199,7 @@ bool TFLexer::lexToken(TFToken *Out) {
       Out->Kind = ne;
       break;
     }
-    return false;
+    break;
     // clang-format off
   case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G':
   case 'H': case 'I': case 'J': case 'K': case 'L': case 'M': case 'N':
@@ -218,6 +220,11 @@ bool TFLexer::lexToken(TFToken *Out) {
   case '\n':
     Out->Kind = newline;
     return lexIndent(Out);
+  }
+  if (Out->Kind == invalid) {
+    errs() << "Invalid token. " << ". Line: " << CurrLoc.Line
+           << " Col: " << CurrLoc.Col << "\n";
+    std::exit(1);
   }
   traverseForward();
   return true;

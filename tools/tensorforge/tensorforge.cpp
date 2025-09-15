@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
 
   std::unique_ptr<MemoryBuffer> InputFile = std::move(*FileOrError);
 
-  TFParser Parser(InputFile->getBuffer());
+  TFParser Parser(InputFile->getBuffer(), StringRef(inputFilename));
 
   if (dumpTokens) {
     Parser.dumpTokens();

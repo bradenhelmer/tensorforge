@@ -11,18 +11,21 @@ namespace tensorforge {
 
 class TFParser {
 private:
-  std::unique_ptr<TFLexer> Lexer;
+  /* Lexical Items */
   TFToken CurrToken;
-  int IndentLevel;
+  std::unique_ptr<TFLexer> Lexer;
 
 public:
+  TFParser(llvm::StringRef Buffer) : Lexer(std::make_unique<TFLexer>(Buffer)) {}
+
   /* Utility methods */
   void advance();
   void dumpTokens();
 
+  /* Matchers */
+  void hardMatch(TFTokenKind Kind);
+
   /* Core parsing methods */
-  TFParser(llvm::StringRef Buffer)
-      : Lexer(std::make_unique<TFLexer>(Buffer)), IndentLevel(0) {}
   std::unique_ptr<TFProgram> parseTFProgram();
 };
 } // namespace tensorforge

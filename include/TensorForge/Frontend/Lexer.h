@@ -38,6 +38,10 @@ public:
     return std::isalpha(c) || std::isdigit(c) || c == '_';
   }
 
+  inline uint8_t getLine() const { return CurrLoc.Line; }
+
+  inline uint8_t getCol() const { return CurrLoc.Col; }
+
   inline void traverseForward() {
     BufferPtr++;
     CurrLoc.Col++;

@@ -1,6 +1,7 @@
 // Parser.cpp
 #include "TensorForge/Frontend/Parser.h"
 #include "TensorForge/Frontend/Token.h"
+#include <cstdlib>
 #include <llvm/Support/raw_ostream.h>
 
 using namespace llvm;
@@ -17,6 +18,14 @@ void TFParser::dumpTokens() {
 
 void TFParser::advance() { Lexer->lexToken(&CurrToken); }
 
-std::unique_ptr<TFProgram> TFParser::parseTFProgram() {
-  return std::make_unique<TFProgram>();
+void TFParser::hardMatch(TFTokenKind Kind) {
+  if (Kind != CurrToken.Kind) {
+    errs() << "Expected " << getTokenName(Kind) << ". Got "
+           << getTokenName(CurrToken.Kind) << ". Line: " << Lexer->getLine()
+           << " Col: " << Lexer->getCol() << "\n";
+    std::exit(1);
+  }
+
+  errs() << "Expected " << getTokenName(Kind) << ". Got "
+         << getTokenName(CurrToken.Kind) << '\n';
 }
