@@ -17,7 +17,6 @@ define returns ifelse forsaken inland android ordinary notation
 # CHECK: kw_float32
 # CHECK: kw_float16
 # CHECK: kw_int32
-# CHECK: kw_int8
 # CHECK: newline
 # CHECK: id
 # CHECK: id

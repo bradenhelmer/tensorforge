@@ -23,6 +23,9 @@ static cl::opt<bool> dumpTokens("dump-tokens",
                                 cl::desc("Dump tokens for source file."),
                                 cl::init(false));
 
+static cl::opt<bool> dumpAST("dump-ast", cl::desc("Dump AST for source file."),
+                             cl::init(false));
+
 int main(int argc, char *argv[]) {
   InitLLVM X(argc, argv);
   cl::ParseCommandLineOptions(argc, argv, "TensorForge Compiler\n");
@@ -35,13 +38,18 @@ int main(int argc, char *argv[]) {
 
   std::unique_ptr<MemoryBuffer> InputFile = std::move(*FileOrError);
 
-  TFParser Parser(InputFile->getBuffer(), StringRef(inputFilename));
+  TFParser Parser(InputFile->getBuffer());
 
   if (dumpTokens) {
     Parser.dumpTokens();
+    return 0;
   }
 
   auto program = Parser.parseTFProgram();
+
+  if (dumpAST) {
+    program->dump();
+  }
 
   return 0;
 }

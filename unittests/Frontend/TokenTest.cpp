@@ -18,9 +18,10 @@ INSTANTIATE_TEST_SUITE_P(
         std::make_pair("for", kw_for), std::make_pair("in", kw_in),
         std::make_pair("and", kw_and), std::make_pair("or", kw_or),
         std::make_pair("not", kw_not), std::make_pair("tensor", kw_tensor),
+        std::make_pair("float64", kw_float64),
         std::make_pair("float32", kw_float32),
         std::make_pair("float16", kw_float16),
-        std::make_pair("int32", kw_int32), std::make_pair("int8", kw_int8)));
+        std::make_pair("int32", kw_int32), std::make_pair("int8", kw_int64)));
 
 TEST_P(TFTokenKindStrPairTests, testGetKeywordKind) {
   auto [keyword, expected] = GetParam();

@@ -23,10 +23,15 @@ public:
   void dumpTokens();
 
   /* Matchers */
-  void hardMatch(TFTokenKind Kind);
+  void advanceHardMatch(TFTokenKind Kind);
+  void advanceSoftMatch(TFTokenKind Kind);
 
   /* Core parsing methods */
   std::unique_ptr<TFProgram> parseTFProgram();
+  std::unique_ptr<TFFunctionDef> parseTFFunctionDef();
+  std::unique_ptr<TFParameter> parseTFParameter();
+  TFType parseTFType();
+  TensorType parseTensorType();
 };
 } // namespace tensorforge
 #endif /* ifndef TF_FRONTEND_PARSER_H */
