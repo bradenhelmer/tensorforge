@@ -19,12 +19,31 @@ public:
   TFParser(llvm::StringRef Buffer) : Lexer(std::make_unique<TFLexer>(Buffer)) {}
 
   /* Utility methods */
-  void advance();
+  void advance() { Lexer->lexToken(&CurrToken); }
   void dumpTokens();
 
   /* Matchers */
-  void advanceHardMatch(TFTokenKind Kind);
-  void advanceSoftMatch(TFTokenKind Kind);
+  void hardMatch(TFTokenKind Kind);
+
+  inline void hardMatchConsume(TFTokenKind Kind) {
+    hardMatch(Kind);
+    advance();
+  }
+  inline void advanceHardMatch(TFTokenKind Kind) {
+    advance();
+    hardMatch(Kind);
+  }
+
+  inline void advanceHardMatchConsume(TFTokenKind Kind) {
+    advanceHardMatch(Kind);
+    advance();
+  }
+
+  inline void advanceSoftMatch(TFTokenKind Kind) {
+    if (CurrToken.Kind == Kind) {
+      advance();
+    }
+  }
 
   /* Core parsing methods */
   std::unique_ptr<TFProgram> parseTFProgram();

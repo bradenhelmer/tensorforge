@@ -16,10 +16,7 @@ void TFParser::dumpTokens() {
   outs() << getTokenName(CurrToken.Kind) << "\n";
 }
 
-void TFParser::advance() { Lexer->lexToken(&CurrToken); }
-
-void TFParser::advanceHardMatch(TFTokenKind Kind) {
-  advance();
+void TFParser::hardMatch(TFTokenKind Kind) {
   if (Kind != CurrToken.Kind) {
     errs() << "Expected " << getTokenName(Kind) << ". Got "
            << getTokenName(CurrToken.Kind) << ". Line: " << Lexer->getLine()
@@ -28,38 +25,32 @@ void TFParser::advanceHardMatch(TFTokenKind Kind) {
   }
 }
 
-void TFParser::advanceSoftMatch(TFTokenKind Kind) {
-  if (CurrToken.Kind == Kind) {
-    advance();
-  }
-}
-
 std::unique_ptr<TFProgram> TFParser::parseTFProgram() {
   std::unique_ptr<TFProgram> Program;
-
-  advanceHardMatch(kw_def);
-  while (CurrToken.Kind != eof) {
+  advance();
+  do {
     Program->addFunction(parseTFFunctionDef());
-  }
+  } while (CurrToken.Kind != eof);
 }
 
 std::unique_ptr<TFFunctionDef> TFParser::parseTFFunctionDef() {
-  advanceHardMatch(id);
+  hardMatchConsume(kw_def);
+  hardMatch(id);
   std::unique_ptr<TFFunctionDef> FunctionDef =
       std::make_unique<TFFunctionDef>(CurrToken.getTokenString());
-  advanceHardMatch(lparen);
-  advance();
+  advanceHardMatchConsume(lparen);
   while (CurrToken.Kind != rparen) {
     FunctionDef->addParameter(parseTFParameter());
     advanceSoftMatch(comma);
   }
+  advanceHardMatchConsume(arrow);
+  TFType FuncRetType = parseTFType();
 }
 
 std::unique_ptr<TFParameter> TFParser::parseTFParameter() {
   advanceHardMatch(id);
   StringRef ParamName = CurrToken.getTokenString();
-  advanceHardMatch(colon);
-  advance();
+  advanceHardMatchConsume(colon);
   TFType Type = parseTFType();
   return std::make_unique<TFParameter>(ParamName, Type);
 }
