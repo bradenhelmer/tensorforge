@@ -15,6 +15,9 @@ private:
   TFToken CurrToken;
   std::unique_ptr<TFLexer> Lexer;
 
+  /* Type Registry */
+  std::unique_ptr<TypeRegistry> Registry;
+
 public:
   TFParser(llvm::StringRef Buffer) : Lexer(std::make_unique<TFLexer>(Buffer)) {}
 
@@ -47,10 +50,22 @@ public:
 
   /* Core parsing methods */
   std::unique_ptr<TFProgram> parseTFProgram();
+
+  /* Type Parsing */
+  TFType *parseTFType();
+  TensorType *parseTensorType();
+
+  /* Function Parsing */
   std::unique_ptr<TFFunctionDef> parseTFFunctionDef();
   std::unique_ptr<TFParameter> parseTFParameter();
-  TFType parseTFType();
-  TensorType parseTensorType();
+
+  /* Statement Parsing */
+  std::unique_ptr<TFStatement> parseTFStatement();
+  std::unique_ptr<TFReturnStatement> parseTFReturnStatement();
+
+  /* Expression Parsing */
+  std::unique_ptr<TFExpression> parseTFExpression();
+  std::unique_ptr<TFIntegerLiteralExpression> parseTFIntegerLiteralExpression();
 };
 } // namespace tensorforge
 #endif /* ifndef TF_FRONTEND_PARSER_H */

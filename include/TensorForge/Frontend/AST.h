@@ -10,11 +10,21 @@ namespace tensorforge {
 
 class TFFunctionDef;
 class TFParameter;
+class TFExpression;
 
 class TFASTNode {
 public:
   virtual ~TFASTNode() = default;
   virtual void dump(uint8_t Indent = 0) const = 0;
+};
+
+class TFTypeNode : public TFASTNode {
+  TFType *Type;
+
+public:
+  TFTypeNode(TFType *Type) : Type(Type) {}
+  void dump(uint8_t Indent = 0) const override;
+  TFType *getType() const { return Type; }
 };
 
 class TFProgram : public TFASTNode {
@@ -35,9 +45,13 @@ class TFFunctionDef : public TFASTNode {
 private:
   std::string Name;
   std::vector<std::unique_ptr<TFParameter>> Parameters;
+  TFTypeNode RetType;
 
 public:
-  TFFunctionDef(llvm::StringRef Name) : Name(Name) {}
+  TFFunctionDef(llvm::StringRef Name,
+                std::vector<std::unique_ptr<TFParameter>> Parameters,
+                TFTypeNode RetType)
+      : Name(Name), Parameters(std::move(Parameters)), RetType(RetType) {}
 
   void dump(uint8_t Indent = 0) const override;
 
@@ -49,13 +63,28 @@ public:
 class TFParameter : public TFASTNode {
 private:
   std::string Name;
-  TFType Type;
+  TFTypeNode Type;
 
 public:
-  TFParameter(llvm::StringRef Name, TFType Type) : Name(Name), Type(Type) {}
+  TFParameter(llvm::StringRef Name, TFTypeNode Type) : Name(Name), Type(Type) {}
 
   void dump(uint8_t Indent = 0) const override;
 };
+
+class TFStatement : public TFASTNode {};
+
+class TFReturnStatement : public TFStatement {
+  std::unique_ptr<TFExpression> Expression;
+
+public:
+  TFReturnStatement(std::unique_ptr<TFExpression> Expression)
+      : Expression(std::move(Expression)) {}
+  void dump(uint8_t Indent = 0) const override;
+};
+
+class TFExpression : public TFASTNode {};
+class TFIntegerLiteralExpression : public TFExpression {};
+class TFFloatLiteralExpression : public TFExpression {};
 
 } // namespace tensorforge
 #endif /* ifndef TF_FRONTEND_AST_H */

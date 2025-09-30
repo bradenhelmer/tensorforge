@@ -4,4 +4,5 @@ add_library(
     ASTDumpers.cpp
     Lexer.cpp
     Parser.cpp
+    Typing.cpp
 )
